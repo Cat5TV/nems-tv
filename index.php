@@ -83,7 +83,11 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
             
             function createTimeStamp() {
                 <?php
-                  $tv_24h = intval(trim(shell_exec('/usr/local/bin/nems-info tv_24h')));
+                  if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
+                    $tv_24h = intval(trim($_SESSION['servers']['parent']['settings']->tv_24h));
+                  } else {
+                    $tv_24h = intval(trim(shell_exec('/usr/local/bin/nems-info tv_24h')));
+                  }
                 ?>
                 // create timestamp
                 var ts = new Date();
