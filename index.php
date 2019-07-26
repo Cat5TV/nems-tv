@@ -18,6 +18,16 @@
 #
 # See: http://www.gnu.org/copyleft/gpl.html
 
+if (session_status() == PHP_SESSION_NONE) {
+  session_start();
+}
+
+// Set the hwid variable and redirect, removing it from the address bar
+if (isset($_GET['hwid'])) {
+  $_SESSION['tv']['hwid'] = filter_var($_GET['hwid'],FILTER_SANITIZE_STRING);
+  header('location:./');
+  exit();
+}
 
 if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
   $connector = 'ncs.php';
@@ -77,7 +87,7 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
                 ?>
                 // create timestamp
                 var ts = new Date();
-		ts = ts.toLocaleTimeString(navigator.language, { hour: '2-digit', minute:'2-digit', <?php if ($tv_24h == 1) { echo 'hour12: false'; } else { echo 'hour12: true'; } ?> } )<?php if ($tv_24h != 1 && $tv_24h != 2) echo '.replace(/(:\d{2}| [AP]M)$/, "")'; ?>;
+		ts = ts.toLocaleTimeString(navigator.language, { hour: '2-digit', minute:'2-digit', <?php if ($tv_24h == 1) { echo 'hour12: false'; } else { echo 'hour12: true'; } ?> } ).replace(/^0(?:0:0?)?/, '')<?php if ($tv_24h != 1 && $tv_24h != 2) echo '.replace(/(:\d{2}| [ap]m)$/, "")'; ?>;
                 $("#timestamp_wrap").empty().append("<div class=\"timestamp_drop\"></div><div class=\"timestamp_stamp\">" + ts +"</div>");
             }
             
@@ -144,6 +154,7 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
      $backgroundElem = 'body';
       if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
         require_once('../inc/wallpaper.php');
+        echo '<style>#logo { background: transparent url(/assets/img/ncs_logo_padded.png); background-size: 170px 60px; }</style>';
       } else {
         require_once('/var/www/html/inc/wallpaper.php');
       }
