@@ -9,7 +9,7 @@
 
   if (session_status() == PHP_SESSION_NONE) { session_start(); }
 
-  include_once('/var/www/cloud.nemslinux.com/html/dashboard/inc/functions.php');
+  include_once('../inc/functions.php');
 
   // Refresh the current stats
   refreshStats();
