@@ -1,5 +1,4 @@
 <?php
-  require_once('/var/www/html/inc/bgcolor.php');
 # The nagios-dashboard was written by Morten Bekkelund & Jonas G. Drange in 2010
 #
 # Patched, modified and added to by various people, see README
@@ -19,14 +18,24 @@
 #
 # See: http://www.gnu.org/copyleft/gpl.html
 
+
+if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
+  $connector = 'ncs.php';
+  require_once('../inc/bgcolor.php');
+} else {
+  $connector = 'livestatus.php';
+  require_once('/var/www/html/inc/bgcolor.php');
+}
+
     $refreshvalue = 30; //value in seconds to refresh data
     $pagetitle = "NEMS TV Dashboard";
 
+    /* add this when we support individual
     $nemsalias = trim(shell_exec('/usr/local/bin/nems-info alias'));
     if (isset($nemsalias) && strtoupper($nemsalias) != 'NEMS') {
        $pagetitle = 'NEMS TV: ' . $nemsalias;
     }
-
+*/
 
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -34,11 +43,11 @@
     <head>
 	<link type="image/ico" rel="icon" href="favicon.ico" />
         <title><?php echo($pagetitle); ?></title>
-        <script src="/js/jquery.min.js"></script>
-        <script src="/js/loadingoverlay.min.js"></script>
+        <script src="https://cloud.nemslinux.com/assets/js/jquery.min.js"></script>
+        <script src="https://cloud.nemslinux.com/assets/js/loadingoverlay.min.js"></script>
 
         </script>
-		<link rel="stylesheet" type="text/css" href="nagios.css" />
+		<link rel="stylesheet" type="text/css" href="nagios.css?a" />
         <style>
           .nagios_statusbar {
             background: rgba(<?= $bgcolorDarkRGB[0] ?>,<?= $bgcolorDarkRGB[1] ?>,<?= $bgcolorDarkRGB[2] ?>,.8) !important;
@@ -74,7 +83,7 @@
             
             function updateNagiosData(block){
                 $("#loading").fadeIn(200);
-    		block.load("./connectors/livestatus.php", function(response){
+    		block.load("./connectors/<?= $connector ?>", function(response){
                     $(this).html(response);
                     $("#loading").fadeOut(200);
                     createTimeStamp();
@@ -129,11 +138,15 @@
         </div>
     </div>
 
-    <script src="/js/jquery.backstretch.min.js"></script>
+    <script src="https://cloud.nemslinux.com/assets/js/jquery.backstretch.min.js"></script>
 
    <?php
      $backgroundElem = 'body';
-     require_once('/var/www/html/inc/wallpaper.php');
+      if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
+        require_once('../inc/wallpaper.php');
+      } else {
+        require_once('/var/www/html/inc/wallpaper.php');
+      }
    ?>
 
 <script>
@@ -191,7 +204,13 @@
     function check_connect() {
     $.ajax({
       type: 'GET',
-      url: '/tv/',
+      <?php
+      if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
+        echo "url: '/dashboard/tv/',";
+      } else {
+        echo "url: '/tv/',";
+      }
+      ?>
       timeout: 5000,  // allow this many milisecs for network connect to succeed
       success: function(data) {
         // we have a connection

@@ -436,5 +436,3 @@ EOQ;
         </table>
     </div>
 </div>
-</body>
-</html>
