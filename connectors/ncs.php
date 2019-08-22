@@ -49,7 +49,6 @@ function sort_by_state($a, $b) {
       return 1;
    }
 }
-
 ?>
 
 <div class="dash_unhandled_hosts hosts dash">
@@ -61,14 +60,15 @@ function sort_by_state($a, $b) {
             $save = "";
             $output = "";
             while ( list(, $row) = each($livestatus->unhandled->hosts) ) {
-                $output .=  "<tr class=\"critical\"><td>".$row[0]."</td><td>".$row[1]."</td></tr>";
+                $output .=  "<tr class=\"critical\"><td>" . $thisserver['state']['decrypted']->alias . "</td><td>".$row[0]."</td><td>".$row[1]."</td></tr>";
                 $save .= $row[0];
             }
             if($save):
             ?>
             <tr class="dash_table_head">
-                <th>Hostname</th>
-                <th>Alias</th>
+                <th>Server Alias</th>
+                <th>Host Name</th>
+                <th>Host Alias</th>
             </tr>
             <?php print $output; ?>
             <?php
@@ -159,6 +159,8 @@ function sort_by_state($a, $b) {
     <div class="dash_wrapper">
         <table class="dash_table">
             <?php 
+            $save = "";
+            $output = "";
 
             while ( list(, $row) = each($livestatus->unhandled->services) ) {
                 if ($row[2] == 2) {
@@ -171,8 +173,7 @@ function sort_by_state($a, $b) {
 
 		$duration = _print_duration($row[4], time());
 		$date = date("Y-m-d H:i:s", $row[5]);
-
-		$output .= "<tr class=\"".$class."\"><td>".$row[0]."</td><td>".$row[1]."</td>";
+		$output .= "<tr class=\"".$class."\"><td>" . $thisserver['state']['decrypted']->alias . "</td><td>".$row[0]."</td><td>".$row[1]."</td>";
 		$output .= "<td>".$row[3]."</td>";
 		$output .= "<td class=\"date date_statechange\">".$duration."</td>";
 		$output .= "<td class=\"date date_lastcheck\">".$date."</td></tr>\n";
@@ -182,6 +183,7 @@ function sort_by_state($a, $b) {
             if ($save):
             ?>
             <tr class="dash_table_head">
+                <th>Server</th>
                 <th>
                     Host
                 </th>

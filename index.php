@@ -22,6 +22,8 @@ if (session_status() == PHP_SESSION_NONE) {
   session_start();
 }
 
+$thisserver = $_SESSION['servers']['parent'];
+
 // Set the hwid variable and redirect, removing it from the address bar
 if (isset($_GET['hwid'])) {
   $_SESSION['tv']['hwid'] = filter_var($_GET['hwid'],FILTER_SANITIZE_STRING);
@@ -31,9 +33,11 @@ if (isset($_GET['hwid'])) {
 
 if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
   $connector = 'ncs.php';
+  $cloud = 1;
   require_once('../inc/bgcolor.php');
 } else {
   $connector = 'livestatus.php';
+  $cloud = 0;
   require_once('/var/www/html/inc/bgcolor.php');
 }
 
@@ -216,16 +220,14 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
 
   });
 
+  <?php
+    if ($cloud == 0) {
+      // Local Version
+  ?>
     function check_connect() {
     $.ajax({
       type: 'GET',
-      <?php
-      if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
-        echo "url: '/dashboard/tv/',";
-      } else {
-        echo "url: '/tv/',";
-      }
-      ?>
+      url: '/tv/',
       timeout: 5000,  // allow this many milisecs for network connect to succeed
       success: function(data) {
         // we have a connection
@@ -239,7 +241,24 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
       }
       });
     };
+  <?php
+    } else {
+  ?>
+      // Cloud Version
 
+      // need to make this check every few minutes via ajax call to external script.
+      function check_connect() {
+        <?php
+          if (strtotime($thisserver['last_sync']) < strtotime('-10 minutes')) {
+            echo '$.LoadingOverlay("show");';
+          } else {
+            echo '$.LoadingOverlay("hide");';
+          }
+        ?>
+      }
+  <?php
+    }
+  ?>
 </script>
 
     </body>
