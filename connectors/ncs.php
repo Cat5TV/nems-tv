@@ -7,9 +7,9 @@
       exit();
   }
 
-  if (session_status() == PHP_SESSION_NONE) { session_start(); }
+  include_once('../../inc/ncs_session.php');
 
-  include_once('/var/www/cloud.nemslinux.com/html/dashboard/inc/functions.php');
+  include_once('../../inc/functions.php');
 
   // Refresh the current stats
   refreshStats();
@@ -18,7 +18,6 @@
   // Note we're storing this in a variable, not the session. Session only holds the encrypted data.
   $thisserver['state']['decrypted'] = decryptStats($thisserver['state']['raw']);
   $livestatus = decryptStats($thisserver['livestatus']);
-
 function _print_duration($start_time, $end_time)
 {
                 $duration = $end_time - $start_time;
@@ -56,7 +55,7 @@ function sort_by_state($a, $b) {
     <div class="dash_wrapper">
         <table class="dash_table">
 
-            <?php 
+            <?php
             $save = "";
             $output = "";
             while ( list(, $row) = each($livestatus->unhandled->hosts) ) {
@@ -72,7 +71,7 @@ function sort_by_state($a, $b) {
             </tr>
             <?php print $output; ?>
             <?php
-            else: 
+            else:
                 print "<tr class=\"ok\"><td>No hosts down or unacknowledged</td></tr>";
             endif;
             ?>
@@ -89,7 +88,7 @@ function sort_by_state($a, $b) {
                 <th>Totals</th>
                 <th>%</th>
             </tr>
-            
+
             <tr class="ok total_hosts_up">
                 <td>Hosts up</td>
                 <td><?php print $livestatus->hosts->up ?>/<?php print $livestatus->hosts->total ?></td>
@@ -158,7 +157,7 @@ function sort_by_state($a, $b) {
     <h2>Unhandled service problems</h2>
     <div class="dash_wrapper">
         <table class="dash_table">
-            <?php 
+            <?php
             $save = "";
             $output = "";
 

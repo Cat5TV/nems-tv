@@ -18,7 +18,10 @@
 #
 # See: http://www.gnu.org/copyleft/gpl.html
 
-if (session_status() == PHP_SESSION_NONE) {
+if (file_exists('../inc/ncs_session.php')) {
+  // NCS
+  include_once('../inc/ncs_session.php');
+} else {
   session_start();
 }
 
@@ -69,22 +72,22 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
         </style>
     </head>
     <body>
-	
+
         <script type="text/javascript">
 
             var placeHolder,
             refreshValue = <?php print $refreshvalue; ?>;
-            
+
             $().ready(function(){
                 placeHolder = $("#nagios_placeholder");
                 updateNagiosData(placeHolder);
                 window.setInterval(updateCountDown, 1000);
             });
-            
-            
-            
+
+
+
             // timestamp stuff
-            
+
             function createTimeStamp() {
                 <?php
                   if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
@@ -98,7 +101,7 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
 		ts = ts.toLocaleTimeString(navigator.language, { hour: '2-digit', minute:'2-digit', <?php if ($tv_24h == 1) { echo 'hour12: false'; } else { echo 'hour12: true'; } ?> } ).replace(/^0(?:0:0?)?/, '')<?php if ($tv_24h != 1 && $tv_24h != 2) echo '.replace(/(:\d{2}| [ap]m)$/, "")'; ?>;
                 $("#timestamp_wrap").empty().append("<div class=\"timestamp_drop\"></div><div class=\"timestamp_stamp\">" + ts +"</div>");
             }
-            
+
             function updateNagiosData(block){
                 $("#loading").fadeIn(200);
     		block.load("./connectors/<?= $connector ?>", function(response){
@@ -107,9 +110,9 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
                     createTimeStamp();
                 });
             }
-            
+
             function updateCountDown(){
-                var countdown = $("#refreshing_countdown"); 
+                var countdown = $("#refreshing_countdown");
                 var remaining = parseInt(countdown.text());
                 if(remaining == 1){
                     updateNagiosData(placeHolder);
@@ -237,7 +240,7 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
       error: function(XMLHttpRequest, textStatus, errorThrown) {
         // no connection, refresh every 15 seconds until resolved
         $.LoadingOverlay("show");
-        window.setTimeout(check_connect, 15000) 
+        window.setTimeout(check_connect, 15000)
       }
       });
     };
