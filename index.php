@@ -64,7 +64,7 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
         <script src="https://cloud.nemslinux.com/assets/js/loadingoverlay.min.js"></script>
 
         </script>
-		<link rel="stylesheet" type="text/css" href="nagios.css?a" />
+		<link rel="stylesheet" type="text/css" href="nagios.css?b" />
         <style>
           .nagios_statusbar {
             background: rgba(<?= $bgcolorDarkRGB[0] ?>,<?= $bgcolorDarkRGB[1] ?>,<?= $bgcolorDarkRGB[2] ?>,.8) !important;
@@ -148,14 +148,17 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
 	<div id="nagios_placeholder"></div>
     <div class="nagios_statusbar">
 	<div class="nagios_statusbar_logo">
-        	<p id="logo_holder"><span id="logo"></span></p>
-		</div>
+            <p id="logo_holder"><span id="logo"></span></p>
+	</div>
         <div class="nagios_statusbar_item">
             <div id="timestamp_wrap"></div>
         </div>
         <div class="nagios_statusbar_item">
             <div id="loading"></div>
             <p id="refreshing"><span id="refreshing_countdown"><?php print $refreshvalue; ?></span> seconds to next check</p>
+        </div>
+        <div class="nagios_statusbar_item">
+            <div id="speed_wrap"></div>
         </div>
     </div>
 
@@ -244,6 +247,17 @@ if ($_SERVER['SERVER_NAME'] == 'cloud.nemslinux.com') {
       }
       });
     };
+
+    function speedtest(){
+      $('#speed_wrap').load('connectors/speedtest.php',function () {
+         $(this).unwrap();
+      });
+    }
+    speedtest(); // This will run on page load
+    setInterval(function(){
+      speedtest() // this will run after every 1 minute
+    }, 60000);
+
   <?php
     } else {
   ?>

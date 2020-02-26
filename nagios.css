@@ -281,3 +281,9 @@ h2 {
 
 .timestamp_stamp {
 }
+
+#speed_wrap {
+    cursor: default;
+    font-size: 0.8em;
+    margin-right: 30px;
+}
