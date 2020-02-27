@@ -12,6 +12,7 @@
     } elseif ($speedtest[0] == 2) { // CRIT
       $color = '#ff686b';
     }
-    echo '<b style="color:#fff;">Internet Status:</b><br /><span style="color:' . $color . '">Ping:' . $speedtest[1] . $speedtest[2] . ' Down: ' . $speedtest[3] . $speedtest[4] . ' Up: ' . $speedtest[5] . $speedtest[6] . '</span>';
+//    echo '<b style="color:#fff;">Internet Status:</b><br />';
+    echo '<span style="color:#777;">Ping: <span style="color:' . $color . '">' . $speedtest[1] . $speedtest[2] . '</span> <i class="fa fa-arrow-down"></i> <span style="color:' . $color . '">' . $speedtest[3] . $speedtest[4] . '</span> <i class="fa fa-arrow-up"></i> <span style="color:' . $color . '">' . $speedtest[5] . $speedtest[6] . '</span></span>';
   }
 ?>
