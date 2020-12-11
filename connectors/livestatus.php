@@ -1,4 +1,4 @@
-<?php 
+<?php
 # The nagios-dashboard was written by Morten Bekkelund & Jonas G. Drange in 2010
 #
 # Patched, modified and added to by various people, see README
